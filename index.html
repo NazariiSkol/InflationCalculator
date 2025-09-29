@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <title>Калькулятор інфляції</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Меню зверху -->
+  <nav class="top-nav">
+    <a href="index.html">Головна</a>
+    <a href="about.html">Про сайт</a>
+    <a href="currencies.html">Валюти</a>
+    <a href="contact.html">Контакти</a>
+  </nav>
+
+  <!-- Основний контент -->
+  <main class="content">
+    <div class="card">
+      <h1>Калькулятор інфляції</h1>
+      <p>Введіть суму, валюту та роки для конвертації</p>
+
+      <div class="form-group">
+        <input type="number" id="amount" placeholder="Сума">
+        <select id="currencyFrom">
+          <option>USD</option>
+          <option>EUR</option>
+          <option>UAH</option>
+        </select>
+        <input type="number" id="yearFrom" placeholder="Рік (з)">
+        <select id="currencyTo">
+          <option>UAH</option>
+          <option>USD</option>
+          <option>EUR</option>
+        </select>
+        <input type="number" id="yearTo" placeholder="Рік (в)">
+      </div>
+
+      <button id="convertBtn" type="button">Конвертувати</button>
+      <div id="result">Результат з'явиться тут після натискання «Конвертувати».</div>
+    </div>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
+
+  <script>
+const rates = { USD: 40, EUR: 43, UAH: 1 };
+const inflationRate = 0.05;
+
+document.getElementById('convertBtn').addEventListener('click', () => {
+  const amount = parseFloat(document.getElementById('amount').value);
+  const fromCurrency = document.getElementById('currencyFrom').value;
+  const toCurrency = document.getElementById('currencyTo').value;
+  const fromYear = parseInt(document.getElementById('yearFrom').value);
+  const toYear = parseInt(document.getElementById('yearTo').value);
+
+  if (isNaN(amount) || isNaN(fromYear) || isNaN(toYear)) {
+    document.getElementById('result').innerText = "Будь ласка, введіть усі значення.";
+    return;
+  }
+
+  let uahValue = amount * rates[fromCurrency];
+  const yearDiff = toYear - fromYear;
+  const factor = Math.pow(1 + inflationRate, Math.abs(yearDiff));
+  uahValue = yearDiff >= 0 ? uahValue * factor : uahValue / factor;
+  const finalValue = uahValue / rates[toCurrency];
+
+  const names = { USD: "Доларів", EUR: "Євро", UAH: "гривень" };
+  document.getElementById('result').innerText =
+    `${amount} ${names[fromCurrency]} (${fromYear}) ≈ ${finalValue.toFixed(2)} ${names[toCurrency]} (${toYear})`;
+});
+</script>
+</body>
+</html>
